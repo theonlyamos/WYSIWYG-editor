@@ -25,27 +25,86 @@
             height: 100%;
         }
 
-        #line-container {
+        .line-container {
             width: 20px;
             height: 100%;
-            background: #000;
+            background: gainsboro;
             padding: 5px 0;
+            text-align: center;
         }
 
         #editor {
             width: 100%;
             height: 100%;
             padding: 5px;
+            border-radius: 0;
+            line-height: 17px;
+        }
+
+        #editor:focus {
+            outline: none;
+        }
+
+        .line-number {
+            line-height: 16px;
+            border-bottom: 1px solid silver;
+            font-size: small;
+        }
+
+        .line-number:nth-child(2n){
+            background: whitesmoke;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="editor-container">
-            <div id="line-container"></div>
-            <textarea id="editor"></textarea>
+            <div class="line-container"></div>
+            <textarea id="editor" autofocus></textarea>
         </div>
-        <div class="preview"></div>
+        <div id="preview"></div>
     </div>
+
+    <script>
+        editor = document.getElementById('editor')
+        preview = document.getElementById('preview')
+        lineContainer = document.querySelector('.line-container')
+
+        const showEditorLines = ()=>{
+            linesCount = editor.value.split('\n').length
+            console.log(linesCount)
+            lineContainer.innerHTML = ''
+            for (i = 0; i <= linesCount; ++i){
+                line = document.createElement('div')
+                line.classList.add('line-number')
+                line.innerHTML = `<small>${i+1}</small>`
+
+                lineContainer.appendChild(line)
+            }
+        }
+
+        editor.addEventListener('keydown', e => {
+            // console.log(e.which)
+            if (e.which == 13){
+                showEditorLines()
+            }
+            else if (e.which == 8){
+                preview.innerHTML = editor.value.slice(0, editor.value.length-1)
+                showEditorLines()
+            }
+
+        })
+
+        editor.addEventListener('keypress', e => {
+             if (e.which != 13 && e.which != 32){
+                preview.innerHTML = editor.value + e.key
+            }
+
+        })
+
+        window.onload = (e)=>{
+            showEditorLines()
+        }
+    </script>
 </body>
 </html>
